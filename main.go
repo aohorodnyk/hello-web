@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -21,6 +22,12 @@ func main() {
 }
 
 func handlerMain(w http.ResponseWriter, r *http.Request) {
-	message := fmt.Sprintf("Hello, request was made to `%s`", r.RequestURI)
-	w.Write([]byte(message))
+	w.Header().Set("Content-Type", "text/plain")
+
+	w.Write([]byte(fmt.Sprintf("Hello, request was made to `%s`\n\n", r.RequestURI)))
+	w.Write([]byte("Environment variables:\n"))
+
+	for _, env := range os.Environ() {
+		w.Write([]byte(fmt.Sprintf("\t%s\n", env)))
+	}
 }
